@@ -49,7 +49,7 @@ class EstudioControllerTest {
         mockMvc.perform(get("/api/v1/estudios"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nombre")
-                        .value("Supergiant Games"));
+                        .value("Ghibli"));
     }
 
     @Test
