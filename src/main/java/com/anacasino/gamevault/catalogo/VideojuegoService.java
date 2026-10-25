@@ -90,4 +90,16 @@ public class VideojuegoService {
                 v.getId(), v.getTitulo(), v.getPrecio(), v.getFechaLanzamiento(), v.getEstudio().getNombre()
         );
     }
+    @Transactional(readOnly = true)
+public List<VideojuegoResponseDTO> getTopNovedades() {
+        try {
+        Thread.sleep(2000); // simula una consulta costosa — lo quitas al final de la actividad
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+    return videojuegoRepository.findTop5ByOrderByFechaLanzamientoDesc()
+            .stream()
+            .map(this::mapToDTO)
+            .toList();
+}
 }

@@ -84,4 +84,12 @@ public class VideojuegoController {
         videojuegoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    @Operation(summary = "Listar los 5 videojuegos más recientes")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+})
+@GetMapping("/top")
+public ResponseEntity<List<VideojuegoResponseDTO>> getTopNovedades() {
+    return ResponseEntity.ok(videojuegoService.getTopNovedades());
+}
 }
