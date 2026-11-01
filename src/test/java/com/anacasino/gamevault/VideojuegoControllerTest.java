@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -39,7 +41,7 @@ class VideojuegoControllerTest {
     private VideojuegoService videojuegoService;
 
     @Test
-    void getAll_DebeDevolverListaDeVideojuegos() throws Exception {
+    void getAll_DebeDevolverPaginaDeVideojuegos() throws Exception {
         var dto = new VideojuegoResponseDTO(
                 1L,
                 "Hades",
@@ -48,11 +50,13 @@ class VideojuegoControllerTest {
                 "Supergiant Games"
         );
 
-        when(videojuegoService.findAll()).thenReturn(List.of(dto));
+        Page<VideojuegoResponseDTO> page = new PageImpl<>(List.of(dto));
+
+        when(videojuegoService.findAllPaginated(any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/videojuegos"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].titulo").value("Hades"));
+                .andExpect(jsonPath("$.content[0].titulo").value("Hades"));
     }
 
     @Test
@@ -82,33 +86,34 @@ class VideojuegoControllerTest {
         mockMvc.perform(post("/api/v1/videojuegos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {
-                                    "titulo": "Hades",
-                                    "precio": 24.99,
-                                    "fechaLanzamiento": "2020-09-17",
-                                    "estudioId": 1
-                                }
-                                """))
+                                    {
+                                        "titulo": "Hades",
+                                        "precio": 24.99,
+                                        "fechaLanzamiento": "2020-09-17",
+                                        "estudioId": 1
+                                    }
+                                    """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.titulo").value("Hades"));
     }
 
-    @Test
-    void update_DebeDevolver200_CuandoEsValido() throws Exception {
-        var dto = new VideojuegoResponseDTO(
-                1L,
-                "Hades Updated",
-                new BigDecimal("29.99"),
-                LocalDate.of(2020, 9, 17),
-                "Supergiant Games"
-        );
+    
+@Test
+void update_DebeDevolver200_CuandoEsValido() throws Exception {
+    var dto = new VideojuegoResponseDTO(
+            1L,
+            "Hades Updated",
+            new BigDecimal("29.99"),
+            LocalDate.of(2020, 9, 17),
+            "Supergiant Games"
+    );
 
-        when(videojuegoService.update(eq(1L), any()))
-                .thenReturn(dto);
+    when(videojuegoService.update(eq(1L), any()))
+            .thenReturn(dto);
 
-        mockMvc.perform(put("/api/v1/videojuegos/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
+    mockMvc.perform(put("/api/v1/videojuegos/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
                                 {
                                     "titulo": "Hades Updated",
                                     "precio": 29.99,
@@ -116,9 +121,10 @@ class VideojuegoControllerTest {
                                     "estudioId": 1
                                 }
                                 """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.titulo").value("Hades Updated"));
-    }
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.titulo").value("Hades Updated"));
+}
+
 
     @Test
     void delete_DebeDevolver204_CuandoExiste() throws Exception {

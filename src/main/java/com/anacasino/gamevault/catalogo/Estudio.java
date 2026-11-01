@@ -19,6 +19,6 @@ public class Estudio {
     private String nombre;
     private String pais;
 
-    @OneToMany(mappedBy = "estudio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "estudio")
     private List<Videojuego> videojuegos = new ArrayList<>();
 }

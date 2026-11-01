@@ -1,8 +1,14 @@
+
 package com.anacasino.gamevault.catalogo.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
 public record EstudioCreateDTO(
-    @NotBlank String nombre,
-    @NotBlank String pais
+
+        @NotBlank(message = "El nombre del estudio no puede estar vacío")
+        String nombre,
+
+        @NotBlank(message = "El país del estudio no puede estar vacío")
+        String pais
+
 ) {}

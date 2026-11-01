@@ -38,7 +38,8 @@ public class EstudioController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<EstudioResponseDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(estudioService.findById(id));
+        throw new RuntimeException("Fallo simulado");
+        //return ResponseEntity.ok(estudioService.findById(id));
     }
 
     @Operation(summary = "Crear un estudio nuevo")

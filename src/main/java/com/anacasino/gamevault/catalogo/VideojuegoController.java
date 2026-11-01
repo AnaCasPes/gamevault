@@ -1,11 +1,19 @@
+
 package com.anacasino.gamevault.catalogo;
 
 import com.anacasino.gamevault.catalogo.dto.VideojuegoCreateDTO;
+import com.anacasino.gamevault.catalogo.dto.VideojuegoFiltroDTO;
 import com.anacasino.gamevault.catalogo.dto.VideojuegoResponseDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +30,6 @@ public class VideojuegoController {
         this.videojuegoService = videojuegoService;
     }
 
-    @Operation(summary = "Listar todos los videojuegos")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista de videojuegos (puede estar vacía)")
-    })
-    @GetMapping
-    public ResponseEntity<List<VideojuegoResponseDTO>> getAll() {
-        return ResponseEntity.ok(videojuegoService.findAll());
-    }
-
     @Operation(summary = "Obtener un videojuego por su id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Videojuego encontrado"),
@@ -38,10 +37,12 @@ public class VideojuegoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<VideojuegoResponseDTO> getById(
-            @PathVariable Long id
-    ) {
-        return ResponseEntity.ok(videojuegoService.findById(id));
-    }
+        @PathVariable Long id
+) {
+    
+
+     return ResponseEntity.ok(videojuegoService.findById(id));
+}
 
     @Operation(summary = "Crear un videojuego nuevo")
     @ApiResponses({
@@ -84,12 +85,27 @@ public class VideojuegoController {
         videojuegoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
     @Operation(summary = "Listar los 5 videojuegos más recientes")
-@ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
-})
-@GetMapping("/top")
-public ResponseEntity<List<VideojuegoResponseDTO>> getTopNovedades() {
-    return ResponseEntity.ok(videojuegoService.getTopNovedades());
-}
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    })
+    @GetMapping("/top")
+    public ResponseEntity<List<VideojuegoResponseDTO>> getTopNovedades() {
+        return ResponseEntity.ok(videojuegoService.getTopNovedades());
+    }
+
+    @Operation(summary = "Listar videojuegos, con filtros opcionales y paginación")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Página de videojuegos que cumplen los filtros indicados (puede estar vacía)")
+    })
+    @GetMapping
+    public ResponseEntity<Page<VideojuegoResponseDTO>> getAll(
+            @ParameterObject @ModelAttribute VideojuegoFiltroDTO filtro,
+            @ParameterObject @PageableDefault(size = 5) Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                videojuegoService.findAllPaginated(filtro, pageable)
+        );
+    }
 }

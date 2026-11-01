@@ -2,14 +2,21 @@ spring:
   config:
     activate:
       on-profile: dev
+  sql:
+    init:
+      mode: always
+
   datasource:
     url: jdbc:postgresql://postgres:5432/gamevault_db
     username: gamevault_user
     password: password123
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true
+
 springdoc:
   swagger-ui:
     path: /documentacion
