@@ -9,6 +9,7 @@ import jakarta.validation.constraints.PastOrPresent;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public record VideojuegoCreateDTO(
 
@@ -25,6 +26,8 @@ public record VideojuegoCreateDTO(
         LocalDate fechaLanzamiento,
 
         @NotNull(message = "Debes indicar el estudio del videojuego")
-        Long estudioId
+        Long estudioId,
+
+        Map<String, Object> detallesPlataforma
 
 ) {}

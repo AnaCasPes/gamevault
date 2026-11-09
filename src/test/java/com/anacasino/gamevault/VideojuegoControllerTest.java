@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,7 +48,7 @@ class VideojuegoControllerTest {
                 "Hades",
                 new BigDecimal("24.99"),
                 LocalDate.of(2020, 9, 17),
-                "Supergiant Games"
+                "Supergiant Games", Map.of()
         );
 
         Page<VideojuegoResponseDTO> page = new PageImpl<>(List.of(dto));
@@ -78,7 +79,7 @@ class VideojuegoControllerTest {
                 "Hades",
                 new BigDecimal("24.99"),
                 LocalDate.of(2020, 9, 17),
-                "Supergiant Games"
+                "Supergiant Games", Map.of()
         );
 
         when(videojuegoService.create(any())).thenReturn(dto);
@@ -105,7 +106,7 @@ void update_DebeDevolver200_CuandoEsValido() throws Exception {
             "Hades Updated",
             new BigDecimal("29.99"),
             LocalDate.of(2020, 9, 17),
-            "Supergiant Games"
+            "Supergiant Games", Map.of()
     );
 
     when(videojuegoService.update(eq(1L), any()))

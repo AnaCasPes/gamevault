@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "videojuego")
@@ -25,4 +29,8 @@ public class Videojuego {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estudio_id")
     private Estudio estudio;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> detallesPlataforma;
 }

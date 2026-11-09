@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.anacasino.gamevault.catalogo.dto.VideojuegoCreateDTO;
 import com.anacasino.gamevault.catalogo.dto.VideojuegoFiltroDTO;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor 
@@ -41,6 +42,7 @@ public class VideojuegoService {
         videojuego.setPrecio(dto.precio());
         videojuego.setFechaLanzamiento(dto.fechaLanzamiento());
         videojuego.setEstudio(estudio);
+        videojuego.setDetallesPlataforma(dto.detallesPlataforma());
 
         Videojuego guardado = videojuegoRepository.save(videojuego);
         return mapToDTO(guardado);
@@ -64,6 +66,7 @@ public class VideojuegoService {
         videojuego.setPrecio(dto.precio());
         videojuego.setFechaLanzamiento(dto.fechaLanzamiento());
         videojuego.setEstudio(estudio);
+        videojuego.setDetallesPlataforma(dto.detallesPlataforma());
 
         Videojuego actualizado = videojuegoRepository.save(videojuego);
         return mapToDTO(actualizado);
@@ -82,7 +85,7 @@ public class VideojuegoService {
 
     private VideojuegoResponseDTO mapToDTO(Videojuego v) {
         return new VideojuegoResponseDTO(
-                v.getId(), v.getTitulo(), v.getPrecio(), v.getFechaLanzamiento(), v.getEstudio().getNombre()
+                v.getId(), v.getTitulo(), v.getPrecio(), v.getFechaLanzamiento(), v.getEstudio().getNombre(), v.getDetallesPlataforma()
         );
     }
 
