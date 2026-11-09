@@ -107,8 +107,19 @@ public class VideojuegoService {
                 .and(VideojuegoSpecifications.precioMenorOIgualA(filtro.precioMax()))
                 .and(VideojuegoSpecifications.perteneceAlEstudio(filtro.estudioId()));
                 
-        // Usamos el método map con el método privado que ya tienes en la clase (this::mapToDTO)
         return videojuegoRepository.findAll(spec, pageable)
                 .map(this::mapToDTO);
     }
+    // En VideojuegoService
+    @Transactional(readOnly = true)
+    public List<VideojuegoResponseDTO> buscarPorEstudio(String nombreEstudio) {
+         return videojuegoRepository.buscarPorNombreDeEstudio(nombreEstudio).stream()
+            .map(this::mapToDTO)
+            .toList();
+    }
+    
+    @Transactional
+    public int aplicarDescuento(Long estudioId) {
+        return videojuegoRepository.aplicarDescuento(estudioId);
+}
 }

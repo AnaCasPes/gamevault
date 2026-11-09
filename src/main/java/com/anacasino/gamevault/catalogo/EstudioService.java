@@ -1,6 +1,8 @@
 package com.anacasino.gamevault.catalogo;
 
 import com.anacasino.gamevault.catalogo.dto.EstudioCreateDTO;
+import com.anacasino.gamevault.catalogo.dto.EstudioRankingConPosicionDTO;
+import com.anacasino.gamevault.catalogo.dto.EstudioRankingDTO;
 import com.anacasino.gamevault.catalogo.dto.EstudioResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,4 +65,26 @@ public class EstudioService {
     private EstudioResponseDTO mapToDTO(Estudio e) {
         return new EstudioResponseDTO(e.getId(), e.getNombre(), e.getPais());
     }
+
+    // En EstudioService
+@Transactional(readOnly = true)
+public List<EstudioRankingDTO> obtenerRanking() {
+    return estudioRepository.rankingPorNumeroDeVideojuegos()
+            .stream()
+            .map(e -> new EstudioRankingDTO(e.getNombre(), e.getVideojuegos().size()))
+            .toList();
+}
+
+// En EstudioService
+@Transactional(readOnly = true)
+public List<EstudioRankingConPosicionDTO> obtenerRankingConPosicion() {
+    return estudioRepository.rankingConPosicion().stream()
+            .map(fila -> new EstudioRankingConPosicionDTO(
+                    /* rellena aquí el mapeo, según el orden de tu SELECT */
+                    (String) fila[0],                         
+                    ((Number) fila[1]).intValue(),             
+                    ((Number) fila[2]).intValue()              
+            ))
+            .toList();
+}
 }

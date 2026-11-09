@@ -1,6 +1,8 @@
 package com.anacasino.gamevault.catalogo;
 
 import com.anacasino.gamevault.catalogo.dto.EstudioCreateDTO;
+import com.anacasino.gamevault.catalogo.dto.EstudioRankingConPosicionDTO;
+import com.anacasino.gamevault.catalogo.dto.EstudioRankingDTO;
 import com.anacasino.gamevault.catalogo.dto.EstudioResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -75,4 +77,23 @@ public class EstudioController {
         estudioService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    // En EstudioController
+@Operation(summary = "Ranking de estudios por número de videojuegos publicados")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ranking completo, ordenado de más a menos videojuegos")
+})
+@GetMapping("/ranking")
+public ResponseEntity<List<EstudioRankingDTO>> getRanking() {
+    return ResponseEntity.ok(estudioService.obtenerRanking());
+}
+// En EstudioController
+@Operation(summary = "Ranking de estudios con su posición numérica")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ranking completo, con la posición de cada estudio ya calculada")
+})
+@GetMapping("/ranking-con-posicion")
+public ResponseEntity<List<EstudioRankingConPosicionDTO>> getRankingConPosicion() {
+    return ResponseEntity.ok(estudioService.obtenerRankingConPosicion());
+}
 }

@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/videojuegos")
@@ -108,4 +109,24 @@ public class VideojuegoController {
                 videojuegoService.findAllPaginated(filtro, pageable)
         );
     }
+    // En VideojuegoController
+    @Operation(summary = "Listar los videojuegos publicados por un estudio, buscando por su nombre exacto")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Videojuegos del estudio indicado (vacía si no tiene ninguno, o si el nombre no existe)")})
+        @GetMapping("/por-nombre-de-estudio/{nombre}")
+        public ResponseEntity<List<VideojuegoResponseDTO>> getPorEstudio(@PathVariable String nombre) {
+
+                return ResponseEntity.ok(videojuegoService.buscarPorEstudio(nombre));
+        }
+        
+        @Operation(summary = "Aplicar un descuento del 10% a todos los videojuegos de un estudio")
+        @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Descuento aplicado; el cuerpo indica cuántos videojuegos se han visto afectados")
+        })
+        
+        @PostMapping("/descuento/{estudioId}")
+        public ResponseEntity<Map<String, Integer>> aplicarDescuento(@PathVariable Long estudioId) {
+                int actualizados = videojuegoService.aplicarDescuento(estudioId);
+                return ResponseEntity.ok(Map.of("videojuegosActualizados", actualizados));
+}
 }
