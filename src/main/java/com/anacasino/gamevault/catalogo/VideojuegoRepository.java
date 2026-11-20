@@ -18,4 +18,15 @@ public interface VideojuegoRepository extends
              @Modifying
              @Query("UPDATE Videojuego v SET v.precio = v.precio * 0.90 WHERE v.estudio.id = :estudioId")
              int aplicarDescuento(@Param("estudioId") Long estudioId);
+
+             @Query(
+                value = "SELECT * FROM videojuego WHERE jsonb_exists(detalles_plataforma, LOWER(CAST(:plataforma AS text)))",
+                nativeQuery = true)
+                List<Videojuego> buscarPorPlataformaNativo(@Param("plataforma") String plataforma);
+
+                @Query(
+        value = "SELECT * FROM videojuego WHERE detalles_plataforma -> 'switch' ->> 'idApp' = CAST(:idApp AS text)",
+        nativeQuery = true
+)
+List<Videojuego> buscarPorIdAppSwitchNativo(@Param("idApp") String idApp);
 }

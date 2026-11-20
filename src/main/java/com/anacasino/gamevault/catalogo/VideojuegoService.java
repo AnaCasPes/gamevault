@@ -108,7 +108,9 @@ public class VideojuegoService {
                 .where(VideojuegoSpecifications.tituloContiene(filtro.titulo()))
                 .and(VideojuegoSpecifications.precioMayorOIgualA(filtro.precioMin()))
                 .and(VideojuegoSpecifications.precioMenorOIgualA(filtro.precioMax()))
-                .and(VideojuegoSpecifications.perteneceAlEstudio(filtro.estudioId()));
+                .and(VideojuegoSpecifications.perteneceAlEstudio(filtro.estudioId()))
+                .and(VideojuegoSpecifications.disponibleEnPlataforma(filtro.plataforma()))
+                .and(VideojuegoSpecifications.conIdAppSwitch(filtro.idAppSwitch()));
                 
         return videojuegoRepository.findAll(spec, pageable)
                 .map(this::mapToDTO);
@@ -124,5 +126,36 @@ public class VideojuegoService {
     @Transactional
     public int aplicarDescuento(Long estudioId) {
         return videojuegoRepository.aplicarDescuento(estudioId);
+}
+public static Specification<Videojuego> conIdAppSwitch(String idApp) {
+    if (idApp == null || idApp.isBlank()) {
+        return Specification.unrestricted();
+    }
+    return (root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                    criteriaBuilder.function(
+                            "jsonb_extract_path_text",
+                            String.class,
+                            root.get("detallesPlataforma"),
+                            criteriaBuilder.literal("switch"),
+                            criteriaBuilder.literal("idApp")
+                    ),
+                    idApp
+            );
+}
+// VideojuegoService
+@Transactional(readOnly = true)
+public List<VideojuegoResponseDTO> buscarPorPlataformaNativo(String plataforma) {
+    return videojuegoRepository.buscarPorPlataformaNativo(plataforma).stream()
+            .map(this::mapToDTO)
+            .toList();
+}
+
+// VideojuegoService
+@Transactional(readOnly = true)
+public List<VideojuegoResponseDTO> buscarPorIdAppSwitchNativo(String idApp) {
+    return videojuegoRepository.buscarPorIdAppSwitchNativo(idApp).stream()
+            .map(this::mapToDTO)
+            .toList();
 }
 }

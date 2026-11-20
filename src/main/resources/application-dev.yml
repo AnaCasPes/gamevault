@@ -2,9 +2,10 @@ spring:
   config:
     activate:
       on-profile: dev
+    import: "optional:application-dev-local.yml"
   sql:
     init:
-      mode: always
+      mode: never
 
   datasource:
     url: jdbc:postgresql://postgres:5432/gamevault_db

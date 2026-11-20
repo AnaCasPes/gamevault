@@ -129,4 +129,23 @@ public class VideojuegoController {
                 int actualizados = videojuegoService.aplicarDescuento(estudioId);
                 return ResponseEntity.ok(Map.of("videojuegosActualizados", actualizados));
 }
+
+// VideojuegoController
+@Operation(summary = "Filtrar videojuegos por plataforma, con SQL nativo (jsonb_exists)")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Videojuegos que tienen esa plataforma en detallesPlataforma")
+})
+@GetMapping("/por-plataforma-nativa")
+public ResponseEntity<List<VideojuegoResponseDTO>> getPorPlataformaNativa(@RequestParam String plataforma) {
+    return ResponseEntity.ok(videojuegoService.buscarPorPlataformaNativo(plataforma));
+}
+// VideojuegoController
+@Operation(summary = "Filtrar videojuegos por idApp de Switch, con SQL nativo (ruta anidada)")
+@ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Videojuegos cuyo detallesPlataforma.switch.idApp coincide exactamente")
+})
+@GetMapping("/por-idapp-switch-nativo")
+public ResponseEntity<List<VideojuegoResponseDTO>> getPorIdAppSwitchNativo(@RequestParam String idApp) {
+    return ResponseEntity.ok(videojuegoService.buscarPorIdAppSwitchNativo(idApp));
+}
 }

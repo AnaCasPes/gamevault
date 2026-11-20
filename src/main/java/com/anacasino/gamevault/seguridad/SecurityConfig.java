@@ -9,30 +9,15 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password("{noop}user123")
-                .roles("USER")
-                .build();
-
-
-                UserDetails admin = User.withUsername("admin")
-                .password("{noop}admin123")
-                .roles("ADMIN")
-                .build();
-
-
-    
-        return new InMemoryUserDetailsManager(user, admin);
-    }
+ 
 
   @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
@@ -41,6 +26,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http, Authentication
                     .requestMatchers(HttpMethod.GET, "/api/v1/videojuegos/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/estudios/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/videojuegos").hasRole("ADMIN")
+                    .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/auth/register").permitAll()
                     .anyRequest().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions
@@ -50,4 +36,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http, Authentication
             .httpBasic(Customizer.withDefaults())
             .build();
         }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+}
     }

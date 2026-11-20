@@ -40,5 +40,38 @@ public static Specification<Videojuego> precioMenorOIgualA(BigDecimal precioMax)
         }
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("estudio").get("id"), estudioId);
-    }  
+    }
+    
+    public static Specification<Videojuego> disponibleEnPlataforma(String plataforma) {
+    if (plataforma == null || plataforma.isBlank()) {
+        return Specification.unrestricted();
+    }
+
+    return (root, query, criteriaBuilder) ->
+            criteriaBuilder.isTrue(
+                    criteriaBuilder.function(
+                            "jsonb_exists",
+                            Boolean.class,
+                            root.get("detallesPlataforma"),
+                            criteriaBuilder.literal(plataforma.toLowerCase())
+                    )
+            );
+}
+public static Specification<Videojuego> conIdAppSwitch(String idApp) {
+    if (idApp == null || idApp.isBlank()) {
+        return Specification.unrestricted();
+    }
+
+    return (root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(
+                    criteriaBuilder.function(
+                            "jsonb_extract_path_text",
+                            String.class,
+                            root.get("detallesPlataforma"),
+                            criteriaBuilder.literal("switch"),
+                            criteriaBuilder.literal("idApp")
+                    ),
+                    idApp
+            );
+}
 }
